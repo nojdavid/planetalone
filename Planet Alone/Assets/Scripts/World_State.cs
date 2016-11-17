@@ -7,8 +7,8 @@ public class World_State : MonoBehaviour {
     private bool robot_interact;
     public VRTK_InteractGrab rightController;
     public VRTK_InteractGrab leftController;
-    GameObject rightHandItem;
-    GameObject leftHandItem;
+    public GameObject rightHandItem;
+    public GameObject leftHandItem;
 	// Use this for initialization
 	void Start () {
 	}

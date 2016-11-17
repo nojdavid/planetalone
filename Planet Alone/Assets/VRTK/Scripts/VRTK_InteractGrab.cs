@@ -2,6 +2,7 @@
 namespace VRTK
 {
     using UnityEngine;
+    
 
     /// <summary>
     /// The Interact Grab script is attached to a Controller object within the `[CameraRig]` prefab and the Controller object requires the `VRTK_ControllerEvents` script to be attached as it uses this for listening to the controller button events for grabbing and releasing interactable game objects. It listens for the `AliasGrabOn` and `AliasGrabOff` events to determine when an object should be grabbed and should be released.
@@ -58,6 +59,10 @@ namespace VRTK
         private int grabEnabledState = 0;
         private float grabPrecognitionTimer = 0f;
         private GameObject undroppableGrabbedObject;
+        private SteamVR_TrackedObject trackedObj;
+        //SteamVR_Controller.Device device;
+        private SteamVR_Controller.Device controller { get { return SteamVR_Controller.Input((int)trackedObj.index); } }
+
 
         public virtual void OnControllerGrabInteractableObject(ObjectInteractEventArgs e)
         {
@@ -106,6 +111,8 @@ namespace VRTK
         {
             return grabbedObject;
         }
+
+
 
         private void Awake()
         {

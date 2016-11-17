@@ -12,6 +12,7 @@ public class Emotions : MonoBehaviour {
 
     public World_State world_state;
     private GameObject my_head;
+    public ControllerVelocity controller_velocity;
 
     private float velocity;
 
@@ -34,6 +35,16 @@ public class Emotions : MonoBehaviour {
 
     float checkVelocity(){ //UPDATE: anxiety, comfort, frustation
         float localVel = GetComponent<Rigidbody>().velocity.magnitude;
+        
+
+        if (world_state.rightHandItem != null && world_state.rightHandItem.CompareTag("Robot_Head"))
+        {
+            localVel = controller_velocity.getVelocity();
+        }else if (world_state.leftHandItem != null && world_state.leftHandItem.CompareTag("Robot_Head"))
+        {
+            localVel = controller_velocity.getVelocity();
+        }
+        
         return localVel; //.magnitude;
     }
 }
