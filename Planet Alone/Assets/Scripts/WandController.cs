@@ -15,10 +15,13 @@ public class WandController : MonoBehaviour
 
     Vector3 position;
     GameObject pickup;
+
+    GameObject item_holding; 
     // Use this for initialization
     void Start()
     {
         trackedObj = GetComponent<SteamVR_TrackedObject>();
+         
     }
 
     // Update is called once per frame
@@ -71,6 +74,7 @@ public class WandController : MonoBehaviour
         InteractableItem collidedItem = collider.GetComponent<InteractableItem>();
         if (collidedItem)
         {
+            item_holding = collidedItem.gameObject;
             objectsHoveringOver.Add(collidedItem);
         }
     }
@@ -80,6 +84,7 @@ public class WandController : MonoBehaviour
         InteractableItem collidedItem = collider.GetComponent<InteractableItem>();
         if (collidedItem)
         {
+            item_holding = null;
             objectsHoveringOver.Remove(collidedItem);
         }
     }
@@ -121,6 +126,11 @@ public class WandController : MonoBehaviour
             if (i != 0) yield return new WaitForSeconds(gapLength);
             yield return StartCoroutine(LongVibration(vibrationLength, strength));
         }
+    }
+
+    public GameObject getItemHolding()
+    {
+        return item_holding;
     }
 
 
