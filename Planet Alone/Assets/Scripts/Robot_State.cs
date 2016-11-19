@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Robot_State : MonoBehaviour {
+public class Robot_State : MonoBehaviour
+{
 
     public Frustration frustration;
     public Comfort comfort;
@@ -15,11 +16,12 @@ public class Robot_State : MonoBehaviour {
     public ControllerVelocity controller_velocity;
     public GameObject vr_player;
     private float velocity;
+    float time_player_not_insight;
 
     // Use this for initialization
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -27,7 +29,8 @@ public class Robot_State : MonoBehaviour {
     {
         check_head();
         velocity = checkVelocity();
-        Debug.Log(velocity);
+        is_vr_player_in_field_of_view_of_robot();
+        //Debug.Log(velocity);
     }
 
     void check_head()
@@ -35,7 +38,7 @@ public class Robot_State : MonoBehaviour {
         my_head = world_state.getRobotObj();
     }
 
-    float checkVelocity()
+    public float checkVelocity()
     { //UPDATE: anxiety, comfort, frustation
         float localVel = GetComponent<Rigidbody>().velocity.magnitude;
 
@@ -52,9 +55,49 @@ public class Robot_State : MonoBehaviour {
         return localVel; //.magnitude;
     }
 
-    bool is_vr_player_in_field_of_view_of_robot()
+    public bool is_vr_player_in_field_of_view_of_robot()
     {
-        Vector3 screenPoint = GetComponent<Camera>().WorldToViewportPoint(vr_player.transform.position);
-        return screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
+        RaycastHit hit;
+        Vector3 rayDirection = vr_player.transform.position - transform.position;
+        float fieldOfViewRange = 50;
+        float rayRange = 10;
+        float minPlaterDetectDistance = 3;
+
+        var distanceToPlayer = Vector3.Distance(transform.position, vr_player.transform.position);
+       
+        if (Physics.Raycast(transform.position, rayDirection, out hit))
+        { // If the player is very close behind the player and in view the enemy will detect the player
+            if ((hit.transform.tag == "MainCamera") && (distanceToPlayer <= minPlaterDetectDistance))
+            {
+                Debug.Log("Can see player");
+                time_player_not_insight = Time.time;
+                return true;
+            }
+        }
+
+        if ((Vector3.Angle(rayDirection, transform.forward)) <= fieldOfViewRange)
+        { // Detect if player is within the field of view
+            if (Physics.Raycast(transform.position, rayDirection, out hit, rayRange))
+            {
+                if (hit.transform.tag == "MainCamera")
+                {
+                    Debug.Log("Can see player");
+                   time_player_not_insight = Time.time;
+                    return true;
+                }
+                else
+                {
+                    Debug.Log("Can not see player");
+                    return false;
+                }
+            }
+        }
+        Debug.Log("END OF FUNC");
+        return false;
+    }
+
+    public float getTimeOutOfSight()
+    {
+        return time_player_not_insight;
     }
 }
