@@ -61,5 +61,11 @@ public class World_State : MonoBehaviour {
            return null;
         
     }
+
+    /*
+    public GameObject getWorldState() {
+        return rightHandItem, LeftHandItem;
+    }
+    */
     
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Robot_State : MonoBehaviour
 {
@@ -17,11 +18,17 @@ public class Robot_State : MonoBehaviour
     public GameObject vr_player;
     private float velocity;
     float time_player_not_insight;
+    float Last_time_speaking = 0;
+    float FriendOrFoe = 0;// x < -0.2 = Foe , -0.2<x<0.2 = Neurtual, 0.2<x = Friend
+    List<Emotion> emotions;
 
     // Use this for initialization
     void Start()
     {
-
+        Emotion comforts = new Emotion();
+        Emotion frustrution = new Emotion();
+        emotions.Add(comforts);
+        emotions.Add(frustrution);
     }
 
     // Update is called once per frame
@@ -96,8 +103,23 @@ public class Robot_State : MonoBehaviour
         return false;
     }
 
+    public float getlastSpeakTime() {
+        return Last_time_speaking;
+    }
+
     public float getTimeOutOfSight()
     {
         return time_player_not_insight;
+    }
+
+
+    public string FriendNFoe() {
+        if (FriendOrFoe > 0.2) {
+            return "Friend";
+        } else if (FriendOrFoe < -0.2) {
+            return "Foe";
+        } else {
+            return "Neutral";
+        }
     }
 }
