@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 public class Robot_State : MonoBehaviour
 {
-
+    /*
     public Frustration frustration;
     public Comfort comfort;
     public Saddness saddness;
     public Anxiety anxiety;
     public Bored bored;
     public Playfullness playfullness;
+    */
 
     public World_State world_state;
     private GameObject my_head;
@@ -25,10 +26,10 @@ public class Robot_State : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Emotion comforts = new Emotion();
-        Emotion frustrution = new Emotion();
-        emotions.Add(comforts);
-        emotions.Add(frustrution);
+        Emotion comfort = new Emotion();
+        Emotion frustration = new Emotion();
+        emotions.Add(comfort);
+        emotions.Add(frustration);
     }
 
     // Update is called once per frame
@@ -42,7 +43,7 @@ public class Robot_State : MonoBehaviour
 
     void check_head()
     {
-        my_head = world_state.getRobotObj();
+        my_head = world_state.getRobotObj();  //Null if robot head is not in vr player's hands
     }
 
     public float checkVelocity()
@@ -76,7 +77,7 @@ public class Robot_State : MonoBehaviour
         { // If the player is very close behind the player and in view the enemy will detect the player
             if ((hit.transform.tag == "MainCamera") && (distanceToPlayer <= minPlaterDetectDistance))
             {
-                Debug.Log("Can see player");
+               // Debug.Log("Can see player");
                 time_player_not_insight = Time.time;
                 return true;
             }
@@ -88,18 +89,18 @@ public class Robot_State : MonoBehaviour
             {
                 if (hit.transform.tag == "MainCamera")
                 {
-                    Debug.Log("Can see player");
+                    //Debug.Log("Can see player");
                    time_player_not_insight = Time.time;
                     return true;
                 }
                 else
                 {
-                    Debug.Log("Can not see player");
+                   // Debug.Log("Can not see player");
                     return false;
                 }
             }
         }
-        Debug.Log("END OF FUNC");
+       // Debug.Log("END OF FUNC");
         return false;
     }
 

@@ -32,8 +32,8 @@ public class THEREALEMOTION : MonoBehaviour {
 	void Update () {
         float vel_util = velocity_utility();
         float FoV_util = FoV_utility();
-        Debug.Log("vel util " + vel_util);
-        Debug.Log("FoV util " + FoV_util);
+        //Debug.Log("vel util " + vel_util);
+        //Debug.Log("FoV util " + FoV_util);
 	}
 
 
