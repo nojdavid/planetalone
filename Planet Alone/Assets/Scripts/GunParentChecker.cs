@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class GunParentChecker : MonoBehaviour {
-    public bool weapon_grabbed = true;
+    public bool weapon_grabbed = false;
 
 	void FixedUpdate () {
         if (transform.parent != null) // && transform.parent.parent != null
@@ -10,6 +10,11 @@ public class GunParentChecker : MonoBehaviour {
 
             transform.localPosition = new Vector3(0, 0, 0);
             transform.localRotation =  Quaternion.Euler(-230, 0, 0);
+            weapon_grabbed = true;
+        }
+        else
+        {
+            weapon_grabbed = false;
         }
     }
 

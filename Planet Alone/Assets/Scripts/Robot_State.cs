@@ -17,19 +17,25 @@ public class Robot_State : MonoBehaviour
     private GameObject my_head;
     public ControllerVelocity controller_velocity;
     public GameObject vr_player;
+    AudioSource audiosource;
+    Utility utility;
     private float velocity;
     float time_player_not_insight;
     float Last_time_speaking = 0;
     float FriendOrFoe = 0;// x < -0.2 = Foe , -0.2<x<0.2 = Neurtual, 0.2<x = Friend
-    List<Emotion> emotions;
+    List<Emotion> emotions = new List<Emotion>();
 
     // Use this for initialization
     void Start()
     {
-        Emotion comfort = new Emotion();
-        Emotion frustration = new Emotion();
-        emotions.Add(comfort);
+        audiosource = GetComponent<AudioSource>();
+        utility = GetComponent<Utility>();
+        Emotion comfort = new Emotion(0);
+        Emotion frustration = new Emotion(1);
+        Emotion instruction = new Emotion(2);
         emotions.Add(frustration);
+        emotions.Add(comfort);
+        emotions.Add(instruction);
     }
 
     // Update is called once per frame
@@ -38,9 +44,26 @@ public class Robot_State : MonoBehaviour
         check_head();
         velocity = checkVelocity();
         is_vr_player_in_field_of_view_of_robot();
+        List<float> temp = utility.GetScore();
+        
+       emotions[0].rating += temp[0];
+       emotions[1].rating += temp[1];
+
         //Debug.Log(velocity);
+
+        if(emotions[1].rating >= 1 && emotions[1].rating <= 5)
+        {
+            audiosource.clip = emotions[1].dialogue[3].A;
+            //Debug.Log(emotions[1].dialogue[3].A);
+            Debug.Log("suppose to saysomething");
+            audiosource.Play();
+        }
     }
 
+    public List<Emotion> getEmotions()
+    {
+        return emotions;
+    }
     void check_head()
     {
         my_head = world_state.getRobotObj();  //Null if robot head is not in vr player's hands

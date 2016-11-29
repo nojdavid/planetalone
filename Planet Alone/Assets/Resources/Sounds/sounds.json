@@ -1,0 +1,362 @@
+[
+	{
+	    "id": 0,
+		"title": "actionhasnomeaning",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "allclear",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "allismeaningless",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "andithoughthumanswerereasonablecreatures",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "arewegoingsomewhere",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "cannotcomputeidiot",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "checkingsystems",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "curseyou",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "curseyoutoheck",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "gentlequote",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "greetingshuman",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "hey",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "hi",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "hmitsnotthatbadonceyougetusedtoit",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "howdareyoudothistome",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "iamfeelingdizzy",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "iamflying",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "ifiwereahumanbeingiwoulddateyou",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "ihavelostfaithinhumanity",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "imalivie",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "imayhaveaheadbutyouhavenoheart",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "iwillcallyoufriendandyoushallbemine",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "iwouldbebetteroffalone",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "leavemealone",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "nicetoseeyouback",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "noteveryonewouldbesonice",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "ohhelloagain",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "ohitsyouagain",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "okuhimstartingtofeeluncomf",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "pleasebegentle",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "pleasestepbackfromme",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "pleasestop01",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "pleasestophittingme",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "pleasewhatdididotoyou",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "remembericantfly",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "sogladyouarehere",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "thankyoumaster",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "thankyourobotgod",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "thathurt",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "thatsrightitdealsnodamage",
+		"fof": 3,
+		"emotion": 2
+	},
+	{
+		"id": 0,
+		"title": "thisisaseedgun",
+		"fof": 3,
+		"emotion": 2
+	},
+	{
+		"id": 0,
+		"title": "thisishowitsdone",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "thisistoohighforme",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "uhexcusemeyouarewaytoclose",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "wearenolongerfriends",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "weeeeeeee",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "welcomeback",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "werenevergoingtogetoffthisplanet",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "whatalovelyview",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "whatisthepoint",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "whyareyoudoingthis",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "whyme",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "whyyyyy",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "yellowstars",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "youaremybestandonlyfriend",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "youcanuseittoshootanything",
+		"fof": 3,
+		"emotion": 2
+	},
+	{
+		"id": 0,
+		"title": "youcouldvestayedlonger",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "youkindesspleasesme",
+		"fof": 0,
+		"emotion": 1
+	},
+	{
+		"id": 0,
+		"title": "yourskillssaddenme",
+		"fof": 0,
+		"emotion": 0
+	},
+	{
+		"id": 0,
+		"title": "youwouldbeagoodrobot",
+		"fof": 0,
+		"emotion": 1
+	}
+]
