@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 
 public class Robot_State : MonoBehaviour
 {
     /*
-    public Frustration frustration;
-    public Comfort comfort;
-    public Saddness saddness;
-    public Anxiety anxiety;
-    public Bored bored;
-    public Playfullness playfullness;
+        hostile_item
+        grab
+        throw
+        idle
+        recovery
+        shake
+        greeting
+        hitting
+        instruction
     */
 
     public World_State world_state;
@@ -23,19 +27,34 @@ public class Robot_State : MonoBehaviour
     float time_player_not_insight;
     float Last_time_speaking = 0;
     float FriendOrFoe = 0;// x < -0.2 = Foe , -0.2<x<0.2 = Neurtual, 0.2<x = Friend
-    List<Emotion> emotions = new List<Emotion>();
+    List<Emotion> emotions;
+    public Dictionary<string, Action_Dialogue> Action;
 
     // Use this for initialization
     void Start()
     {
+
         audiosource = GetComponent<AudioSource>();
         utility = GetComponent<Utility>();
-        Emotion comfort = new Emotion(0);
-        Emotion frustration = new Emotion(1);
-        Emotion instruction = new Emotion(2);
-        emotions.Add(frustration);
-        emotions.Add(comfort);
-        emotions.Add(instruction);
+
+
+        Action = new Dictionary<string, Action_Dialogue>()
+        {
+            { "Hostile_item", new Action_Dialogue("Hostile_item")},
+            { "Grab", new Action_Dialogue("Grab")},
+            { "Throw", new Action_Dialogue("Throw")},
+            { "Recovery", new Action_Dialogue("Recovery")},
+            { "Shake", new Action_Dialogue("Shake")},
+            { "Greeting", new Action_Dialogue("Greeting")},
+            { "Hitting", new Action_Dialogue("Hitting")},
+            { "Instruction", new Action_Dialogue("Instruction") }
+        };
+        emotions = new List<Emotion> // Idle
+        {
+            new Emotion(0),//frustration
+            new Emotion(1),//comfort
+            new Emotion(2)// quiet
+        };
     }
 
     // Update is called once per frame
@@ -49,15 +68,52 @@ public class Robot_State : MonoBehaviour
        emotions[0].rating += temp[0];
        emotions[1].rating += temp[1];
 
-        //Debug.Log(velocity);
+        Talk(Idle_Diologue());
+    }
 
-        if(emotions[1].rating >= 1 && emotions[1].rating <= 5)
+    void Talk(Tuple audio)
+    {
+        if (Time.time - Last_time_speaking > 5 && !audiosource.isPlaying)
         {
-            audiosource.clip = emotions[1].dialogue[3].A;
-            //Debug.Log(emotions[1].dialogue[3].A);
-            Debug.Log("suppose to saysomething");
-            audiosource.Play();
+            audiosource.clip = audio.A;
+            //audiosource.clip = emotions[0].dialogue[1][0].A;
+            //audiosource.clip = Action["Grab"].dialogue[0][0].A;
+            if (audiosource.clip != null)
+            {
+                audio.count += 1;
+                audiosource.Play();
+                Debug.Log(audio.count);
+            }
+            Last_time_speaking = Time.time;
         }
+    }
+
+    Tuple Idle_Diologue()
+    {
+        // find the emotion 
+        float maxRating = float.MinValue;
+        Emotion maxEmotion = new Emotion(3);
+        foreach (Emotion emotion in emotions)
+        {
+            if (emotion.rating > maxRating)
+            {
+                maxRating = emotion.rating;
+                maxEmotion = emotion;
+            }
+        }
+
+        // find the best quote
+        Tuple best_quote = new Tuple();
+        int max_count = int.MinValue;
+        foreach (Tuple entry in maxEmotion.dialogue[(int)FriendOrFoe])
+        {
+            if (entry.count > max_count)
+            {
+                maxRating = entry.count;
+                best_quote = entry;
+            }
+        }
+        return best_quote;
     }
 
     public List<Emotion> getEmotions()

@@ -6,15 +6,15 @@ public class Utility : MonoBehaviour {
     public int shift = 5;
     public float soft = 0.9f;
     public Robot_State rs;
-    List<float> value;
+    List<float> utility_value;
     public const float default_comfort = 0.25f; //constant comfort increase
     public const float default_frustration = - 0.15f; //constant frustration decrease
 
     void Awake()
     {
-        value = new List<float>();
-        value.Add(0f);
-        value.Add(0f);
+        utility_value = new List<float>();
+        utility_value.Add(0f);
+        utility_value.Add(0f);
     }
 
     // Update is called once per frame
@@ -23,14 +23,22 @@ public class Utility : MonoBehaviour {
         float vel_util = velocity_utility();
         float FoV_util = FoV_utility();
 
-        value[0] = frustration_rating(vel_util, FoV_util) + default_frustration;
-        value[1] = comfort_rating(vel_util, FoV_util) + default_comfort;
+        utility_value[0] = frustration_rating(vel_util, FoV_util) + default_frustration;
+        utility_value[0] = utility_value[0] < 0 ? 0 : utility_value[0];
+        /*
+        if (utility_value[0]<0)
+        {
+            utility_value[0] = 0;
+        }
+        */
+        utility_value[1] = comfort_rating(vel_util, FoV_util) + default_comfort;
 
 
         //Debug.Log("vel util " + vel_util);
         //Debug.Log("FoV util " + FoV_util);
     }
 
+    //
     float frustration_rating(float vel, float fov)
     {
         float temp = 0;
@@ -57,7 +65,7 @@ public class Utility : MonoBehaviour {
     public List<float> GetScore()
     {
         //Debug.Log(value[0] + "," + value[1]);
-        return value;
+        return utility_value;
     }
 
     float velocity_utility()

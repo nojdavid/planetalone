@@ -16,16 +16,17 @@ public class Dialogue : MonoBehaviour {
     private JsonData itemData;
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
         itemData = JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/Resources/Sounds/sounds.json"));
         ConstructItemDatabse();
 	}
 
     void ConstructItemDatabse()
     {
+        //Debug.Log(" itemData.Count " + itemData.Count);
         for (int i = 0; i < itemData.Count; ++i)
         {
-            database.Add(new Item((int)itemData[i]["id"], (string)itemData[i]["title"], (int)itemData[i]["fof"], (int)itemData[i]["emotion"]));
+            database.Add(new Item((string)itemData[i]["title"], (int)itemData[i]["fof"], (int)itemData[i]["emotion"], (string)itemData[i]["action_tag"]));
         }
     }
 	
@@ -37,20 +38,20 @@ public class Dialogue : MonoBehaviour {
 
 public class Item
 {
-    public int ID { get; set; }
     public string Title { get; set; }
     public AudioClip Sources { get; set; }
     public int FOF { get; set; }
     public int Emotion { get; set; }
+    public string Action_tag { get; set; }
 
-    public Item(int id, string title, int fof, int emotion)
+    public Item(string title, int fof, int emotion, string action_tag)
     {
-        this.ID = id;
         this.Title = title;
-        Debug.Log("Sounds/" + title);
+       // Debug.Log("Sounds/" + title);
         this.Sources = Resources.Load<AudioClip>("Sounds/" + title);
-        Debug.Log(this.Sources);
+        //Debug.Log(this.Sources);
         this.FOF = fof;
         this.Emotion = emotion;
+        this.Action_tag = action_tag;
     }
 }
