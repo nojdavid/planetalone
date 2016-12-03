@@ -6,10 +6,11 @@ using System.Collections.Generic;
 public class Robot_State : MonoBehaviour
 {
     /*
+     *         idle
+     *         
         hostile_item
         grab
         throw
-        idle
         recovery
         shake
         greeting
@@ -68,52 +69,40 @@ public class Robot_State : MonoBehaviour
        emotions[0].rating += temp[0];
        emotions[1].rating += temp[1];
 
-        Talk(Idle_Diologue());
+        Idle_Diologue();
     }
 
-    void Talk(Tuple audio)
+    void Idle_Diologue()
     {
-        if (Time.time - Last_time_speaking > 5 && !audiosource.isPlaying)
+        if (Time.time - Last_time_speaking > 2 && !audiosource.isPlaying)
         {
-            audiosource.clip = audio.A;
-            //audiosource.clip = emotions[0].dialogue[1][0].A;
-            //audiosource.clip = Action["Grab"].dialogue[0][0].A;
-            if (audiosource.clip != null)
+                // find the emotion 
+            float maxRating = float.MinValue;
+            int maxindex = 0;
+            for (int i = 0; i < emotions.Count; ++i)
             {
-                audio.count += 1;
-                audiosource.Play();
-                Debug.Log(audio.count);
+                if (emotions[i].rating > maxRating)
+                {
+                    maxRating = emotions[i].rating;
+                    maxindex = i;
+                }
             }
-            Last_time_speaking = Time.time;
-        }
-    }
 
-    Tuple Idle_Diologue()
-    {
-        // find the emotion 
-        float maxRating = float.MinValue;
-        Emotion maxEmotion = new Emotion(3);
-        foreach (Emotion emotion in emotions)
-        {
-            if (emotion.rating > maxRating)
+            // find the best quote; 
+            int minIndex = 0;
+            int min_count = int.MaxValue;
+            for (int i = 0; i < emotions[maxindex].dialogue[(int)FriendOrFoe].Count; ++i)
             {
-                maxRating = emotion.rating;
-                maxEmotion = emotion;
+                if (emotions[maxindex].dialogue[(int)FriendOrFoe][i].count < min_count)
+                {
+                    min_count = emotions[maxindex].dialogue[(int)FriendOrFoe][i].count;
+                    minIndex = i;
+                }
             }
+            Debug.Log("Before" + minIndex + "," + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
+            emotions[maxindex].Talk((int)FriendOrFoe,minIndex, ref Last_time_speaking);
+            Debug.Log("After" + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
         }
-
-        // find the best quote
-        Tuple best_quote = new Tuple();
-        int max_count = int.MinValue;
-        foreach (Tuple entry in maxEmotion.dialogue[(int)FriendOrFoe])
-        {
-            if (entry.count > max_count)
-            {
-                maxRating = entry.count;
-                best_quote = entry;
-            }
-        }
-        return best_quote;
     }
 
     public List<Emotion> getEmotions()
