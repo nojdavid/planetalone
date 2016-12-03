@@ -3,6 +3,8 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 
+
+
 public class Robot_State : MonoBehaviour
 {
     /*
@@ -31,12 +33,32 @@ public class Robot_State : MonoBehaviour
     List<Emotion> emotions;
     public Dictionary<string, Action_Dialogue> Action;
 
+    bool firstTimeSeen = false;
+    float lastPickedUp;
+    List<System.Func<string>> Rule_Set;
+    string action_tag;
+    string previous_action_tag;
+    public bool idle = false;
+
     // Use this for initialization
     void Start()
     {
 
         audiosource = GetComponent<AudioSource>();
         utility = GetComponent<Utility>();
+
+        
+        Rule_Set = new List<System.Func<string>>
+        {
+            Greeting_Rule,
+            Grab_Rule,
+            Throw_Rule,
+            Shake_Rule,
+            Recovery_Rule,
+            HostileItem_Rule,
+            Instruction_Rule
+        };
+        
 
 
         Action = new Dictionary<string, Action_Dialogue>()
@@ -63,18 +85,63 @@ public class Robot_State : MonoBehaviour
     {
         check_head();
         velocity = checkVelocity();
-        is_vr_player_in_field_of_view_of_robot();
+
+        //Updates last time player is seen
+        is_vr_player_in_field_of_view_of_robot(); 
         List<float> temp = utility.GetScore();
         
        emotions[0].rating += temp[0];
        emotions[1].rating += temp[1];
 
-        Idle_Diologue();
+        //Action Dialogue
+        foreach(System.Func<string> rule in Rule_Set)
+        {
+            action_tag = rule();
+            if(action_tag != null)
+            {
+                break;
+            }
+        }
+
+        if(action_tag != null)
+        {
+            Action_Dialogue();
+        }
+       
+        if (!audiosource.isPlaying)
+        {
+            //Memory Dialogue
+            Idle_Diologue();
+            idle = true;
+        }
+        
+    }
+
+    void Action_Dialogue()
+    {
+        // find the best quote; 
+        int minIndex = 0;
+        int min_count = int.MaxValue;
+        Debug.Log("actiobn tag" + action_tag);
+        for (int i = 0; i < Action[action_tag].dialogue[(int)FriendOrFoe].Count; ++i)
+        {
+            if (Action[action_tag].dialogue[(int)FriendOrFoe][i].count < min_count)
+            {
+                min_count = Action[action_tag].dialogue[(int)FriendOrFoe][i].count;
+                minIndex = i;
+            }
+        }
+       // Debug.Log("Before" + minIndex + "," + Action[action_tag].dialogue[(int)FriendOrFoe][minIndex].count);
+        Action[action_tag].Talk((int)FriendOrFoe, minIndex, ref Last_time_speaking);
+        //Debug.Log("After" + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
+        previous_action_tag = action_tag == null ? previous_action_tag : action_tag;
+        action_tag = null;
+        
     }
 
     void Idle_Diologue()
     {
-        if (Time.time - Last_time_speaking > 2 && !audiosource.isPlaying)
+        if (Time.time - Last_time_speaking > 2)
         {
                 // find the emotion 
             float maxRating = float.MinValue;
@@ -105,6 +172,85 @@ public class Robot_State : MonoBehaviour
         }
     }
 
+    
+    string Greeting_Rule()
+    {
+        //Greetings: not seen 7 - 10 seconds and distance is <= 20
+        if ((Time.time - time_player_not_insight >= Random.Range(0, 3) + 7 && Vector3.Distance(this.transform.position, vr_player.transform.position) <= 20) || firstTimeSeen == false)
+        {
+            firstTimeSeen = true;
+            return "Greeting";
+        }
+        return null;
+    }
+    string Grab_Rule()
+    {
+       //Grab: picked up and time last 3 - 8
+        if (my_head != null && Time.time - lastPickedUp == Random.Range(1, 5) + 2)
+        {
+            return "Grab";
+        }
+        return null;
+    }
+
+    string Throw_Rule()
+    {
+        //Throw: velcoity and not picked up
+        if (checkVelocity() >= 4 && my_head == null)
+        {
+            return "Throw";
+        }
+        return null;
+    }
+
+    string Shake_Rule()
+    {
+         //Shake: 
+        if (checkVelocity() >= 1.5 && my_head != null)
+        {
+            return "Shake";
+        }
+        return null;
+    }
+
+    string Recovery_Rule()
+    {
+        
+        if (previous_action_tag == "Throw" && this.transform.position.y  < 0.5f && check_hand("Robot_Head"))
+        {
+            return "Recovery";
+        }
+        return null;
+    }
+
+    string HostileItem_Rule()
+    {
+        if (check_hand("hostile_item"))
+        {
+            return "Hostile_item";
+        }
+        return null;
+    }
+
+    string Instruction_Rule()
+    {
+        if (check_hand("gun"))
+        {
+            return "Instruction";
+        }
+        return null;
+    }
+
+    bool check_hand(string tag)
+    {
+        Pair Items = world_state.get_Items_In_Hands();
+        if ((Items.x != null && Items.x.CompareTag(tag)) || ((Items.y != null && Items.y.CompareTag(tag))))
+        {
+            return true;
+        }
+        return false;
+    }
+
     public List<Emotion> getEmotions()
     {
         return emotions;
@@ -112,6 +258,10 @@ public class Robot_State : MonoBehaviour
     void check_head()
     {
         my_head = world_state.getRobotObj();  //Null if robot head is not in vr player's hands
+        if(my_head != null)
+        {
+            lastPickedUp = Time.time;
+        }
     }
 
     public float checkVelocity()

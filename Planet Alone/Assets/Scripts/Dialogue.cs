@@ -7,6 +7,11 @@ using LitJson;
 public class Dialogue : MonoBehaviour {
 
     /*
+     * Number of Sounds clips for each emotion:
+     * Frustration: 11
+     * Comfort: 8
+     * 
+     * 
     //CATEGORIES OF DIOLOGUE
     List<Tuple> frustration; // 0
     List<Tuple> comfort;     // 1

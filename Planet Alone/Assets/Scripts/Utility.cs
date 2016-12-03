@@ -25,12 +25,7 @@ public class Utility : MonoBehaviour {
 
         utility_value[0] = frustration_rating(vel_util, FoV_util) + default_frustration;
         utility_value[0] = utility_value[0] < 0 ? 0 : utility_value[0];
-        /*
-        if (utility_value[0]<0)
-        {
-            utility_value[0] = 0;
-        }
-        */
+
         utility_value[1] = comfort_rating(vel_util, FoV_util) + default_comfort;
 
 

@@ -20,6 +20,11 @@ public class World_State : MonoBehaviour {
 
 	}
 
+    public Pair get_Items_In_Hands()
+    {
+        return new Pair(rightHandItem, leftHandItem);
+    }
+
     void updatePlayerItem()
     {
         rightHandItem = rightController.GetGrabbedObject();
@@ -58,7 +63,7 @@ public class World_State : MonoBehaviour {
             }
         }
         
-           return null;
+        return null;
         
     }
 
