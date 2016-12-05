@@ -29,7 +29,7 @@ public class Robot_State : MonoBehaviour
     private float velocity;
     float time_player_not_insight;
     float Last_time_speaking = 0;
-    float FriendOrFoe = 0;// x < -0.2 = Foe , -0.2<x<0.2 = Neurtual, 0.2<x = Friend
+    int FriendOrFoe = 0;// x < -0.2 = Foe , -0.2<x<0.2 = Neurtual, 0.2<x = Friend
     List<Emotion> emotions;
     public Dictionary<string, Action_Dialogue> Action;
 
@@ -85,6 +85,8 @@ public class Robot_State : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        //FriendOrFoe = Math.Round(number);
        // check_head();
         velocity = checkVelocity();
 
@@ -162,8 +164,9 @@ public class Robot_State : MonoBehaviour
         
         //ADD EXCEPTION TO THE REPEAT RULE FOR SHAKE
 
-        if (action_tag == null || action_tag == previous_action_tag) return;
-        Debug.Log("actiobn tag" + action_tag);
+        if (Repeat_Rule()) return;
+        if(action_tag == previous_action_tag && action_tag == "Shake" ) Debug.Log("Shacking");
+        //Debug.Log("actiobn tag" + action_tag  + ", prev   " + previous_action_tag);
         //if (action_tag == null) return;
         // find the best quote; 
         int minIndex = 0;
@@ -180,7 +183,7 @@ public class Robot_State : MonoBehaviour
        // Debug.Log("Before" + minIndex + "," + Action[action_tag].dialogue[(int)FriendOrFoe][minIndex].count);
         Action[action_tag].Talk((int)FriendOrFoe, minIndex, ref Last_time_speaking);
         previous_action_tag = action_tag == null ? previous_action_tag : action_tag;
-        action_tag = null;
+        //action_tag = null;
     }
 
     void Idle_Dialogue()
@@ -213,10 +216,17 @@ public class Robot_State : MonoBehaviour
                     minIndex = i;
                 }
             }
-            Debug.Log(maxindex);
+            //Debug.Log(maxindex);
             //Debug.Log("Before" + minIndex + "," + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
             emotions[maxindex].Talk((int)FriendOrFoe,minIndex, ref Last_time_speaking);
         }
+    }
+
+    bool Repeat_Rule()
+    {
+        if (action_tag == null || (action_tag == previous_action_tag && (action_tag != "Shake")))
+            return true;
+        return false;
     }
 
     
@@ -243,7 +253,7 @@ public class Robot_State : MonoBehaviour
     string Throw_Rule()
     {
         //Throw: velcoity and not picked up
-        if (checkVelocity() >= 4 && !check_hand("Robot_Head"))
+        if (checkVelocity() >= 3.5f && !check_hand("Robot_Head"))
         {
             return "Throw";
         }
@@ -252,8 +262,9 @@ public class Robot_State : MonoBehaviour
 
     string Shake_Rule()
     {
+        //if(check_hand("Robot_Head"))Debug.Log(checkVelocity());
         //Shake:     
-        if (checkVelocity() >= 2 && check_hand("Robot_Head") && previous_action_tag == "Grab")
+        if (check_hand("Robot_Head") && checkVelocity() >= 4f )// && previous_action_tag == "Grab")
         {
             return "Shake";
         }
