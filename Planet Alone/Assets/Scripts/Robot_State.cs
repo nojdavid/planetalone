@@ -39,6 +39,8 @@ public class Robot_State : MonoBehaviour
     string action_tag;
     string previous_action_tag;
     public bool idle = false;
+    private bool collide_with_hammer = false;
+    private float hostileItem_InRange;
 
     // Use this for initialization
     void Start()
@@ -51,9 +53,9 @@ public class Robot_State : MonoBehaviour
         Rule_Set = new List<System.Func<string>>
         {
             Greeting_Rule,
+            Shake_Rule,
             Grab_Rule,
             Throw_Rule,
-            Shake_Rule,
             Recovery_Rule,
             HostileItem_Rule,
             Instruction_Rule
@@ -83,46 +85,90 @@ public class Robot_State : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        check_head();
+       // check_head();
         velocity = checkVelocity();
 
         //Updates last time player is seen
-        is_vr_player_in_field_of_view_of_robot(); 
-        List<float> temp = utility.GetScore();
+        //is_vr_player_in_field_of_view_of_robot(); 
+        List<float> utility_value = utility.GetScore();
         
-       emotions[0].rating += temp[0];
-       emotions[1].rating += temp[1];
-
+       emotions[0].rating = utility_value[0];
+       emotions[1].rating = utility_value[1];
+       emotions[2].rating = utility_value[2]; // quiet
         //Action Dialogue
-        foreach(System.Func<string> rule in Rule_Set)
+        foreach (System.Func<string> rule in Rule_Set)
         {
+            //is null if no action is satisfied
             action_tag = rule();
+
             if(action_tag != null)
             {
                 break;
             }
         }
 
-        if(action_tag != null)
-        {
-            Action_Dialogue();
-        }
+
+        Action_Dialogue();
+
        
         if (!audiosource.isPlaying)
         {
             //Memory Dialogue
-            Idle_Diologue();
+            Idle_Dialogue();
             idle = true;
         }
         
     }
 
+    public float hostileItem_inRange_Time()
+    {
+        if (is_vr_player_in_field_of_view_of_robot() && (world_state.rightHandItem != null && world_state.rightHandItem.CompareTag("hostile_item")) || (world_state.leftHandItem != null && world_state.leftHandItem.CompareTag("hostile_item")))
+        {
+            hostileItem_InRange = Time.time;
+            return hostileItem_InRange;
+        }
+        return 0f;
+        
+    }
+
+    public float hammer_vel_onCollision()
+    {
+        if ((world_state.rightHandItem != null && world_state.rightHandItem.CompareTag("hostile_item")) || (world_state.leftHandItem != null && world_state.leftHandItem.CompareTag("hostile_item")) && collide_with_hammer )
+        {
+            return controller_velocity.getVelocity();
+        }else
+        {
+            return 0;
+        }
+       
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+
+        if (col.gameObject.CompareTag("hostile_item"))
+        {
+            collide_with_hammer = true;
+        }
+        else
+        {
+            collide_with_hammer = false;
+        }
+    
+    }
+
     void Action_Dialogue()
     {
+        
+        //ADD EXCEPTION TO THE REPEAT RULE FOR SHAKE
+
+        if (action_tag == null || action_tag == previous_action_tag) return;
+        Debug.Log("actiobn tag" + action_tag);
+        //if (action_tag == null) return;
         // find the best quote; 
         int minIndex = 0;
         int min_count = int.MaxValue;
-        Debug.Log("actiobn tag" + action_tag);
+
         for (int i = 0; i < Action[action_tag].dialogue[(int)FriendOrFoe].Count; ++i)
         {
             if (Action[action_tag].dialogue[(int)FriendOrFoe][i].count < min_count)
@@ -133,14 +179,13 @@ public class Robot_State : MonoBehaviour
         }
        // Debug.Log("Before" + minIndex + "," + Action[action_tag].dialogue[(int)FriendOrFoe][minIndex].count);
         Action[action_tag].Talk((int)FriendOrFoe, minIndex, ref Last_time_speaking);
-        //Debug.Log("After" + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
         previous_action_tag = action_tag == null ? previous_action_tag : action_tag;
         action_tag = null;
-        
     }
 
-    void Idle_Diologue()
+    void Idle_Dialogue()
     {
+        
         if (Time.time - Last_time_speaking > 2)
         {
                 // find the emotion 
@@ -148,6 +193,8 @@ public class Robot_State : MonoBehaviour
             int maxindex = 0;
             for (int i = 0; i < emotions.Count; ++i)
             {
+
+                //Debug.Log(i + " " + emotions[i].rating);
                 if (emotions[i].rating > maxRating)
                 {
                     maxRating = emotions[i].rating;
@@ -166,9 +213,9 @@ public class Robot_State : MonoBehaviour
                     minIndex = i;
                 }
             }
-            Debug.Log("Before" + minIndex + "," + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
+            Debug.Log(maxindex);
+            //Debug.Log("Before" + minIndex + "," + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
             emotions[maxindex].Talk((int)FriendOrFoe,minIndex, ref Last_time_speaking);
-            Debug.Log("After" + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
         }
     }
 
@@ -186,7 +233,7 @@ public class Robot_State : MonoBehaviour
     string Grab_Rule()
     {
        //Grab: picked up and time last 3 - 8
-        if (my_head != null && Time.time - lastPickedUp == Random.Range(1, 5) + 2)
+        if (check_hand("Robot_Head") && previous_action_tag != "Shake") //&& Time.time - lastPickedUp == Random.Range(1, 5) + 2 
         {
             return "Grab";
         }
@@ -196,7 +243,7 @@ public class Robot_State : MonoBehaviour
     string Throw_Rule()
     {
         //Throw: velcoity and not picked up
-        if (checkVelocity() >= 4 && my_head == null)
+        if (checkVelocity() >= 4 && !check_hand("Robot_Head"))
         {
             return "Throw";
         }
@@ -205,8 +252,8 @@ public class Robot_State : MonoBehaviour
 
     string Shake_Rule()
     {
-         //Shake: 
-        if (checkVelocity() >= 1.5 && my_head != null)
+        //Shake:     
+        if (checkVelocity() >= 2 && check_hand("Robot_Head") && previous_action_tag == "Grab")
         {
             return "Shake";
         }
@@ -216,7 +263,7 @@ public class Robot_State : MonoBehaviour
     string Recovery_Rule()
     {
         
-        if (previous_action_tag == "Throw" && this.transform.position.y  < 0.5f && check_hand("Robot_Head"))
+        if (previous_action_tag == "Throw" && this.transform.position.y  < 0.5f && !check_hand("Robot_Head"))
         {
             return "Recovery";
         }
@@ -257,8 +304,8 @@ public class Robot_State : MonoBehaviour
     }
     void check_head()
     {
-        my_head = world_state.getRobotObj();  //Null if robot head is not in vr player's hands
-        if(my_head != null)
+        //Null if robot head is not in vr player's hands
+        if(my_head != world_state.getRobotObj())
         {
             lastPickedUp = Time.time;
         }
@@ -268,14 +315,13 @@ public class Robot_State : MonoBehaviour
     { //UPDATE: anxiety, comfort, frustation
         float localVel = GetComponent<Rigidbody>().velocity.magnitude;
 
-
         if (world_state.rightHandItem != null && world_state.rightHandItem.CompareTag("Robot_Head"))
         {
-            localVel = controller_velocity.getVelocity();
+            localVel = controller_velocity.getVelocity() * 3;
         }
         else if (world_state.leftHandItem != null && world_state.leftHandItem.CompareTag("Robot_Head"))
         {
-            localVel = controller_velocity.getVelocity();
+            localVel = controller_velocity.getVelocity() * 3;
         }
 
         return localVel; //.magnitude;

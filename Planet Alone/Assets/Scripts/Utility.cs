@@ -3,16 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Utility : MonoBehaviour {
-    public int shift = 5;
-    public float soft = 0.9f;
+    public int current_shift = 5;
+    public float current_soft = 0.9f;
     public Robot_State rs;
     List<float> utility_value;
-    public const float default_comfort = 0.25f; //constant comfort increase
-    public const float default_frustration = - 0.15f; //constant frustration decrease
+    public const float default_comfort = 0.025f; //constant comfort increase
+    public const float default_frustration = - 0.005f; //constant frustration decrease
 
     void Awake()
     {
         utility_value = new List<float>();
+        utility_value.Add(0f);
         utility_value.Add(0f);
         utility_value.Add(0f);
     }
@@ -22,39 +23,27 @@ public class Utility : MonoBehaviour {
     {
         float vel_util = velocity_utility();
         float FoV_util = FoV_utility();
+        float vel_collide_hammer = hammer_utility();
+        float hostileItem_inRange = hammer_time_utility();
 
-        utility_value[0] = frustration_rating(vel_util, FoV_util) + default_frustration;
-        utility_value[0] = utility_value[0] < 0 ? 0 : utility_value[0];
+        utility_value[0] = frustration_rating(vel_util, 1-FoV_util, vel_collide_hammer);
 
-        utility_value[1] = comfort_rating(vel_util, FoV_util) + default_comfort;
+        utility_value[1] = comfort_rating(1-vel_util, FoV_util, hostileItem_inRange);
 
-
-        //Debug.Log("vel util " + vel_util);
-        //Debug.Log("FoV util " + FoV_util);
+        utility_value[2] = quiet_utility();
     }
 
-    //
-    float frustration_rating(float vel, float fov)
+    //Combine Utility to enter in emotion
+    float frustration_rating(float vel, float fov, float vel_col)
     {
-        float temp = 0;
-
-        temp = vel + fov;
-        if(temp > 1)
-        {
-            temp = 1;
-        }
-
-        return temp;
+        return (vel + fov + vel_col)/3;
     }
 
-    float comfort_rating(float vel, float fov)
+    float comfort_rating(float vel, float fov, float hos_inRange)
     {
-        float temp = 0;
-
-        temp = 1 - vel;
-
-        return temp;
+        return hos_inRange >0? (vel + hos_inRange) / 2 : (vel + fov) / 2;
     }
+    
 
 
     public List<float> GetScore()
@@ -65,33 +54,62 @@ public class Utility : MonoBehaviour {
 
     float velocity_utility()
     {
-        return utility_calculation(rs.checkVelocity());
+        return utility_calculation(rs.checkVelocity(), 5, current_soft, -.2f);
     }
 
     float FoV_utility()
     {
         if (!rs.is_vr_player_in_field_of_view_of_robot())
         {
-            float current_time = Time.time;
             //getTimeOutOfSight(); //range 0 - 10 sec
-            return utility_calculation(current_time - rs.getTimeOutOfSight());
+            float current_time = Time.time;
+            return utility_calculation(current_time - rs.getTimeOutOfSight(), current_shift, current_soft, -.2f);
         }
         return 0f;
+    }
+
+    float hammer_utility()
+    {
+        return utility_calculation(rs.hammer_vel_onCollision(), 4, current_soft, 0);
+    }
+
+    float hammer_time_utility()
+    {
+        return utility_calculation(rs.hostileItem_inRange_Time(), 4, 5, 0);
     }
 
     float quiet_utility()
     {
         float current_time = Time.time;
-        return utility_calculation_opp(current_time - rs.getlastSpeakTime());
+        return utility_calculation_opp(current_time - rs.getlastSpeakTime(), 1f, -5f, 0f);
     }
+                        //////////
+                       //
+                      //
+                     //
+                    //
+                  //
+                //
+    /////////////
 
-    float utility_calculation(float util)
+    float utility_calculation(float util, float shift, float soft, float y_shift)
     {
-        return 1 / (1 + (Mathf.Exp(-util + shift) * Mathf.Pow(soft, (-util + shift))));
+        return y_shift + 1 / (1 + (Mathf.Exp(-util + shift) * Mathf.Pow(soft, (-util + shift))));
     }
+    
+    ////
+        /////
+            //
+              //
+              //    
+              //
+              //
+               //
+                ////
+                  ////////////////
 
-    float utility_calculation_opp(float util)
+    float utility_calculation_opp(float util, float q_soft,float q_shift, float y_shift)
     {
-        return 1 / (1 + (Mathf.Exp(util + shift) * Mathf.Pow(soft, (util + shift))));
+        return y_shift + 1 / (1 + 0.1f *(Mathf.Exp(util + q_shift) * Mathf.Pow(q_soft, (util + q_shift))));
     }
 }

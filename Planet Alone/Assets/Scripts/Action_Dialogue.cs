@@ -54,6 +54,7 @@ public class Action_Dialogue
         {
             if (rs.idle)
             {
+                //fadeOut(audiosource,10f);
                 audiosource.Stop();
                 rs.idle = false;
             }
@@ -61,5 +62,19 @@ public class Action_Dialogue
             audiosource.Play();
             ls = Time.time;
         }
+    }
+
+    public static IEnumerator fadeOut(AudioSource audioSource, float FadeTime)
+    {
+        float startVolume = audioSource.volume;
+
+        while (audioSource.volume > 0)
+        {
+            audioSource.volume -= startVolume * Time.deltaTime / FadeTime;
+            yield return null;
+        }
+
+        audioSource.Stop();
+        audioSource.volume = startVolume;
     }
 }

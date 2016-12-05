@@ -42,13 +42,30 @@ public class Emotion{
     /// </summary>
     public void Talk(int fof, int index, ref float ls)
     {
-        audiosource.clip = dialogue[fof][index].A;
-        if (audiosource.clip != null)
+        if (index < dialogue[fof].Count)
         {
-            dialogue[fof][index].count += 1;
-            audiosource.Play();
-            ls = Time.time;
+            audiosource.clip = dialogue[fof][index].A;
+            if (audiosource.clip != null)
+            {
+                dialogue[fof][index].count += 1;
+                audiosource.Play();
+                ls = Time.time;
+            }
         }
+    }
+
+    public static IEnumerator fadeOut(AudioSource audioSource, float FadeTime)
+    {
+        float startVolume = audioSource.volume;
+
+        while (audioSource.volume > 0)
+        {
+            audioSource.volume -= startVolume * Time.deltaTime / FadeTime;
+            yield return null;
+        }
+
+        audioSource.Stop();
+        audioSource.volume = startVolume;
     }
 }
 

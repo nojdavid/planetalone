@@ -9,6 +9,7 @@ public class World_State : MonoBehaviour {
     public VRTK_InteractGrab leftController;
     public GameObject rightHandItem;
     public GameObject leftHandItem;
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -66,11 +67,5 @@ public class World_State : MonoBehaviour {
         return null;
         
     }
-
-    /*
-    public GameObject getWorldState() {
-        return rightHandItem, LeftHandItem;
-    }
-    */
     
 }
