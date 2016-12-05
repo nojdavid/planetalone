@@ -20,6 +20,7 @@ public class Action_Dialogue
     Dialogue data;
     const int friend = 0;
     const int foe = 1;
+    float weight;
     AudioSource audiosource;
     Utility utility;
     Robot_State rs;
@@ -30,10 +31,17 @@ public class Action_Dialogue
         { foe, new List<Tuple>() }
     };
     */
+
+    public float get_weight()
+    {
+        return weight;
+    }
+
     public List<List<Tuple>> dialogue = new List<List<Tuple>>{new List<Tuple>(),new List<Tuple>()};
 
-    public Action_Dialogue(string tag)
+    public Action_Dialogue(string tag, float w)
     {
+        weight = w;
         data = GameObject.FindGameObjectWithTag("Robot_Head").GetComponent<Dialogue>();
         audiosource = GameObject.FindGameObjectWithTag("Robot_Head").GetComponent<AudioSource>();
         utility = GameObject.FindGameObjectWithTag("Robot_Head").GetComponent<Utility>();

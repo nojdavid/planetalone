@@ -43,6 +43,12 @@ public class Robot_State : MonoBehaviour
     private bool collide_with_hammer = false;
     private float hostileItem_InRange;
 
+    const float no_threat = 0.0f;
+    const float low_threat = 0.001f;
+    const float mediium_threat = 0.005f;
+    const float high_threat = 0.01f;
+
+
     // Use this for initialization
     void Start()
     {
@@ -67,14 +73,14 @@ public class Robot_State : MonoBehaviour
 
         Action = new Dictionary<string, Action_Dialogue>()
         {
-            { "Hostile_item", new Action_Dialogue("Hostile_item")},
-            { "Grab", new Action_Dialogue("Grab")},
-            { "Throw", new Action_Dialogue("Throw")},
-            { "Recovery", new Action_Dialogue("Recovery")},
-            { "Shake", new Action_Dialogue("Shake")},
-            { "Greeting", new Action_Dialogue("Greeting")},
-            { "Hitting", new Action_Dialogue("Hitting")},
-            { "Instruction", new Action_Dialogue("Instruction") }
+            { "Hostile_item", new Action_Dialogue("Hostile_item", mediium_threat)},
+            { "Grab", new Action_Dialogue("Grab", no_threat)},
+            { "Throw", new Action_Dialogue("Throw", mediium_threat)},
+            { "Recovery", new Action_Dialogue("Recovery", no_threat)},
+            { "Shake", new Action_Dialogue("Shake", mediium_threat)},
+            { "Greeting", new Action_Dialogue("Greeting", -mediium_threat)},
+            { "Hitting", new Action_Dialogue("Hitting", high_threat)},
+            { "Instruction", new Action_Dialogue("Instruction", -high_threat) }
         };
         emotions = new List<Emotion> // Idle
         {
@@ -124,6 +130,8 @@ public class Robot_State : MonoBehaviour
 
             if (action_tag != null)
             {
+                // affect friend or foe status
+                fof_class.AddFOF(Action[action_tag].get_weight());
                 break;
             }
         }

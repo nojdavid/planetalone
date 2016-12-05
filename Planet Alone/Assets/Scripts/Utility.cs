@@ -63,7 +63,7 @@ public class Utility : MonoBehaviour {
         {
             //getTimeOutOfSight(); //range 0 - 10 sec
             float current_time = Time.time;
-            return utility_calculation(current_time - rs.getTimeOutOfSight(), current_shift, current_soft, -.2f);
+            return utility_calculation(current_time - rs.getTimeOutOfSight(), current_shift, current_soft, 0.0f);
         }
         return 0f;
     }
