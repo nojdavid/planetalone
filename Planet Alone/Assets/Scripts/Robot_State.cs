@@ -33,6 +33,7 @@ public class Robot_State : MonoBehaviour
     List<Emotion> emotions;
     public Dictionary<string, Action_Dialogue> Action;
 
+    Friend_Foe fof_class;
     bool firstTimeSeen = false;
     float lastPickedUp;
     List<System.Func<string>> Rule_Set;
@@ -48,8 +49,9 @@ public class Robot_State : MonoBehaviour
 
         audiosource = GetComponent<AudioSource>();
         utility = GetComponent<Utility>();
+        fof_class = GetComponent<Friend_Foe>();
 
-        
+
         Rule_Set = new List<System.Func<string>>
         {
             Greeting_Rule,
@@ -86,7 +88,7 @@ public class Robot_State : MonoBehaviour
     void Update()
     {
 
-        //FriendOrFoe = Math.Round(number);
+        FriendOrFoe = fof_class.GetFOF();
        // check_head();
         velocity = checkVelocity();
 
@@ -97,19 +99,9 @@ public class Robot_State : MonoBehaviour
        emotions[0].rating = utility_value[0];
        emotions[1].rating = utility_value[1];
        emotions[2].rating = utility_value[2]; // quiet
-        //Action Dialogue
-        foreach (System.Func<string> rule in Rule_Set)
-        {
-            //is null if no action is satisfied
-            action_tag = rule();
-
-            if(action_tag != null)
-            {
-                break;
-            }
-        }
 
 
+        Action_tag_determine();
         Action_Dialogue();
 
        
@@ -120,6 +112,21 @@ public class Robot_State : MonoBehaviour
             idle = true;
         }
         
+    }
+
+    // determine the action_tag
+    void Action_tag_determine()
+    {
+        foreach (System.Func<string> rule in Rule_Set)
+        {
+            //is null if no action is satisfied
+            action_tag = rule();
+
+            if (action_tag != null)
+            {
+                break;
+            }
+        }
     }
 
     public float hostileItem_inRange_Time()
@@ -208,17 +215,17 @@ public class Robot_State : MonoBehaviour
             // find the best quote; 
             int minIndex = 0;
             int min_count = int.MaxValue;
-            for (int i = 0; i < emotions[maxindex].dialogue[(int)FriendOrFoe].Count; ++i)
+            for (int i = 0; i < emotions[maxindex].dialogue[FriendOrFoe].Count; ++i)
             {
-                if (emotions[maxindex].dialogue[(int)FriendOrFoe][i].count < min_count)
+                if (emotions[maxindex].dialogue[FriendOrFoe][i].count < min_count)
                 {
-                    min_count = emotions[maxindex].dialogue[(int)FriendOrFoe][i].count;
+                    min_count = emotions[maxindex].dialogue[FriendOrFoe][i].count;
                     minIndex = i;
                 }
             }
             //Debug.Log(maxindex);
             //Debug.Log("Before" + minIndex + "," + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
-            emotions[maxindex].Talk((int)FriendOrFoe,minIndex, ref Last_time_speaking);
+            emotions[maxindex].Talk(FriendOrFoe,minIndex, ref Last_time_speaking);
         }
     }
 
