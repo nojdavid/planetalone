@@ -102,8 +102,8 @@ public class Robot_State : MonoBehaviour
         //is_vr_player_in_field_of_view_of_robot(); 
         List<float> utility_value = utility.GetScore();
         
-       emotions[0].rating = utility_value[0];
-       emotions[1].rating = utility_value[1];
+       emotions[0].rating = utility_value[0]; 
+       emotions[1].rating = utility_value[1]; Debug.Log("frus: " + emotions[0].rating + ",     comf: " + emotions[1].rating);
        emotions[2].rating = utility_value[2]; // quiet
 
 

@@ -11,6 +11,7 @@ public class Friend_Foe : MonoBehaviour {
         Mathf.Clamp(Friend_or_foe_meter, minimum, maximum);
     }
 
+
     public void AddFOF(float score)
     {
         Friend_or_foe_meter = score * Time.deltaTime;
