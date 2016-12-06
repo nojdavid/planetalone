@@ -17,7 +17,7 @@ public class ShowParticles : MonoBehaviour {
         if (!hit_particles.isPlaying)
         {
             // hit_particles.transform.position = pos;
-            Debug.Log(hit_particles.transform.position);
+            //Debug.Log(hit_particles.transform.position);
             hit_particles.Play();
         }
 

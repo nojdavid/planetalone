@@ -17,7 +17,14 @@ public class Utility : MonoBehaviour {
     }
    
 
-    ////
+
+
+    float quiet_utility()
+    {
+        float current_time = Time.time;
+        return utility_calculation_opp(current_time - rs.getlastSpeakTime(), 1f, -7f, 0f);
+    }
+      ////
         /////
             //
               //
@@ -28,22 +35,22 @@ public class Utility : MonoBehaviour {
                 ////
                   ////////////////
 
-    float utility_calculation_opp(float util, float q_soft,float q_shift, float y_shift)
+    float utility_calculation_opp(float util, float q_soft, float q_shift, float y_shift)
     {
-        return y_shift + 1 / (1 + 0.02f *(Mathf.Exp(util + q_shift) * Mathf.Pow(q_soft, (util + q_shift))));
-    }
-
-    float quiet_utility()
-    {
-        float current_time = Time.time;
-        return utility_calculation_opp(current_time - rs.getlastSpeakTime(), 1f, -7f, 0f);
+        return y_shift + 1 / (1 + 1f * (Mathf.Exp(util + q_shift) * Mathf.Pow(q_soft, (util + q_shift))));
     }
 
     public float Memoryutility(float j)
     {
         float i = Time.time - j;
-        return 1 / (1 + 0.03f * (Mathf.Exp(i -8) * Mathf.Pow(0.5f, (i - 8))));
+        return 1 / (1 + 0.001f * (Mathf.Exp(i -10) * Mathf.Pow(0.5f, (i - 10))));
     }
+
+    public float EmotionUtility(float rating)
+    {
+        return 10 / (1 + (Mathf.Exp(-rating + 6) * Mathf.Pow(100000f, -rating)));
+    }
+
 
 }
 

@@ -51,7 +51,7 @@ public class Emotion{
                 audiosource.Play();
                 ls = Time.time;
             }
-        }
+        } 
     }
 
 }

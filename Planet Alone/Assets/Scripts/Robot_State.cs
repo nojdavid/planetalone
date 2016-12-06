@@ -44,12 +44,13 @@ public class Robot_State : MonoBehaviour
     private bool collide_with_hammer = false;
     private float hostileItem_InRange;
 
-    const float no_threat = 0.0f;
-    const float low_threat = 0.001f;
-    const float mediium_threat = 0.005f;
-    const float high_threat = 0.01f;
+    const float no_weight = 0.0f;
+    const float low_weight = 0.01f;
+    const float medium_weight = 0.05f;
+    const float high_weight = 0.2f;
     float timer = 0;
 
+    float previous_time_seen;
 
     // Use this for initialization
     void Start()
@@ -62,13 +63,13 @@ public class Robot_State : MonoBehaviour
 
         Rule_Set = new List<System.Func<string>>
         {
-            Greeting_Rule,
+            Hitting_Rule,
             Shake_Rule,
             Grab_Rule,
             Throw_Rule,
             Recovery_Rule,
             HostileItem_Rule,
-            Hitting_Rule,
+            Greeting_Rule,
             Instruction_Rule
         };
         
@@ -76,14 +77,14 @@ public class Robot_State : MonoBehaviour
 
         Action = new Dictionary<string, Action_Dialogue>()
         {
-            { "Hostile_item", new Action_Dialogue("Hostile_item", low_threat)},
-            { "Grab", new Action_Dialogue("Grab", no_threat)},
-            { "Throw", new Action_Dialogue("Throw", mediium_threat)},
-            { "Recovery", new Action_Dialogue("Recovery", no_threat)},
-            { "Shake", new Action_Dialogue("Shake", low_threat)},
-            { "Hitting", new Action_Dialogue("Hitting", high_threat)},
-            { "Greeting", new Action_Dialogue("Greeting", mediium_threat)}, // Comfort
-            { "Instruction", new Action_Dialogue("Instruction", high_threat) } // Comfort
+            { "Hostile_item", new Action_Dialogue("Hostile_item", low_weight)},
+            { "Grab", new Action_Dialogue("Grab", no_weight)},
+            { "Throw", new Action_Dialogue("Throw", medium_weight)},
+            { "Recovery", new Action_Dialogue("Recovery", no_weight)},
+            { "Shake", new Action_Dialogue("Shake", low_weight)},
+            { "Hitting", new Action_Dialogue("Hitting", high_weight)},
+            { "Greeting", new Action_Dialogue("Greeting", low_weight)}, // Comfort
+            { "Instruction", new Action_Dialogue("Instruction", high_weight) } // Comfort
         };
         emotions = new List<Emotion> // Idle
         {
@@ -106,9 +107,6 @@ public class Robot_State : MonoBehaviour
 
         Action_tag_determine();
         //action_tag = "Shake";
-        
-
-       
         if (!audiosource.isPlaying)
         {
             //Memory Dialogue
@@ -129,11 +127,10 @@ public class Robot_State : MonoBehaviour
 
                 //is null if no action is satisfied
                 action_tag = rule();
-
+                //Debug.Log("testing "+action_tag);
                 if (action_tag != null)
                 {
                     // affect friend or foe status
-                    fof_class.AddFOF(Action[action_tag].get_weight());
                     Action_Dialogue();
                     break;
                 }
@@ -154,7 +151,7 @@ public class Robot_State : MonoBehaviour
 
     public float hammer_vel_onCollision()
     {
-        if ((world_state.rightHandItem != null && world_state.rightHandItem.CompareTag("hostile_item")) || (world_state.leftHandItem != null && world_state.leftHandItem.CompareTag("hostile_item")) && collide_with_hammer )
+        if (collide_with_hammer )
         {
             return controller_velocity.getVelocity();
         }else
@@ -170,10 +167,6 @@ public class Robot_State : MonoBehaviour
         if (col.gameObject.CompareTag("hostile_item"))
         {
             collide_with_hammer = true;
-        }
-        else
-        {
-            collide_with_hammer = false;
         }
     
     }
@@ -200,6 +193,7 @@ public class Robot_State : MonoBehaviour
             }
         }
         */
+        Debug.Log(action_tag);
         Action[action_tag].Talk(FriendOrFoe,0, ref Last_time_speaking);
         memory.RecordActionToMemory(action_tag);
         previous_action_tag = action_tag == null ? previous_action_tag : action_tag;
@@ -227,6 +221,8 @@ public class Robot_State : MonoBehaviour
         emotions[0].rating = GetFrustrationScore();
         emotions[1].rating = GetComfortScore();
         emotions[2].rating = utility.quiet_ut;
+        fof_class.AddFOF(utility.EmotionUtility(emotions[0].rating) - utility.EmotionUtility(emotions[1].rating));
+        //Debug.Log("Frus  " +emotions[0].rating + " | Com  " + emotions[1].rating + " | q  " + emotions[2].rating);
     }
 
     int Find_Emotion_With_Best_Rating()
@@ -251,23 +247,10 @@ public class Robot_State : MonoBehaviour
         Update_Emotions_Score();
         // find the emotion 
         int emotionindex = Find_Emotion_With_Best_Rating();
+        ///Debug.Log("Emotion    " + emotionindex);
         // find the best quote; 
         emotions[emotionindex].dialogue[FriendOrFoe].Sort((p1, p2) => p1.count.CompareTo(p2.count));
         emotions[emotionindex].Talk(FriendOrFoe, 0, ref Last_time_speaking);
-        /*
-        if (Time.time - Last_time_speaking > 2){
-                int minIndex = 0;
-        int min_count = int.MaxValue;
-        for (int i = 0; i < emotions[maxindex].dialogue[FriendOrFoe].Count; ++i)
-        {
-            if (emotions[maxindex].dialogue[FriendOrFoe][i].count < min_count)
-            {
-                min_count = emotions[maxindex].dialogue[FriendOrFoe][i].count;
-                minIndex = i;
-            }
-        }
-        }
-        */
     }
 
     bool Repeat_Rule()
@@ -279,18 +262,27 @@ public class Robot_State : MonoBehaviour
 
     string Hitting_Rule()
     {
-        if ((world_state.rightHandItem != null && world_state.rightHandItem.CompareTag("hostile_item")) || (world_state.leftHandItem != null && world_state.leftHandItem.CompareTag("hostile_item")) && collide_with_hammer)
+        if (collide_with_hammer)
         {
+            collide_with_hammer = false;
             return "Hitting";
         }
         return null;
     }
 
+    bool first_time_seen()
+    {
+        if (previous_time_seen > 0 && Time.time - time_player_not_insight == 0)
+        {
+            return true;
+        }
+        return false;
+    }
 
     string Greeting_Rule()
     {
         //Greetings: not seen 7 - 10 seconds and distance is <= 20
-        if ((Time.time - time_player_not_insight >= Random.Range(0, 3) + 7 && Vector3.Distance(this.transform.position, vr_player.transform.position) <= 20) || firstTimeSeen == false)
+        if ((first_time_seen() && Vector3.Distance(this.transform.position, vr_player.transform.position) <= 20) || !firstTimeSeen)
         {
             firstTimeSeen = true;
             return "Greeting";
@@ -409,7 +401,8 @@ public class Robot_State : MonoBehaviour
         { // If the player is very close behind the player and in view the enemy will detect the player
             if ((hit.transform.tag == "MainCamera") && (distanceToPlayer <= minPlaterDetectDistance))
             {
-               // Debug.Log("Can see player");
+                // Debug.Log("Can see player");
+                previous_time_seen = Time.time - time_player_not_insight;
                 time_player_not_insight = Time.time;
                 return true;
             }
@@ -422,17 +415,18 @@ public class Robot_State : MonoBehaviour
                 if (hit.transform.tag == "MainCamera")
                 {
                     //Debug.Log("Can see player");
-                   time_player_not_insight = Time.time;
+                    previous_time_seen = Time.time - time_player_not_insight;
+                    time_player_not_insight = Time.time;
                     return true;
                 }
                 else
                 {
-                   // Debug.Log("Can not see player");
+                    // Debug.Log("Can not see player");
                     return false;
                 }
             }
         }
-       // Debug.Log("END OF FUNC");
+        // Debug.Log("END OF FUNC");
         return false;
     }
 

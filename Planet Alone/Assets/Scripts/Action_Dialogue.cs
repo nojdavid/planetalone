@@ -57,7 +57,7 @@ public class Action_Dialogue
 
     public void Talk(int fof, int index, ref float ls) // ls = last speak
     {
-        if (dialogue[fof][index].A != null)
+        if (dialogue[fof].Count > 0 && dialogue[fof][index].A != null)
         {
             if (rs.idle && audiosource.isPlaying)
             {

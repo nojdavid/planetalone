@@ -26,7 +26,7 @@ public class Memory : MonoBehaviour {
     public void RecordActionToMemory(string tag)
     {
         if(memory.ContainsKey(tag)) memory[tag].Enqueue(Time.time);
-        Debug.Log(tag + "  "  +memory[tag].Count);
+        //Debug.Log(tag + "  "  +memory[tag].Count);
     }
 
     public float Rating(string tag, float weight)

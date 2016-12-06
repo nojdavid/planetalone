@@ -2,19 +2,20 @@
 using System.Collections;
 
 public class Friend_Foe : MonoBehaviour {
-    public float minimum = 0F;
-    public float maximum = 1.0F;
-    float Friend_or_foe_meter = 0.5f;
+    public int minimum = 0;
+    public int maximum = 1;
+    float Friend_or_foe_meter = 0.0f;
 	
 	// Update is called once per frame
 	void Update () {
-        Mathf.Clamp(Friend_or_foe_meter, minimum, maximum);
+        Friend_or_foe_meter = Mathf.Clamp(Friend_or_foe_meter, minimum, maximum);
+        //Debug.Log("FOFFUCK " + Friend_or_foe_meter);
     }
 
 
     public void AddFOF(float score)
     {
-        Friend_or_foe_meter = score * Time.deltaTime;
+        Friend_or_foe_meter += score * Time.deltaTime;
     }
 
     public int GetFOF()

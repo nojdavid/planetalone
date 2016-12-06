@@ -1,7 +1,7 @@
 [
 	{
 		"title": "actionhasnomeaning",
-		"fof": 1,
+		"fof": 0,
 		"emotion": 0,
 		"action_tag": "Idle"
 	},
@@ -229,7 +229,7 @@
     },
     {
 		"title": "whyareyoudoingthis",
-		"fof": 0,
+		"fof": 1,
 		"emotion": 0,
 		"action_tag": "Hitting"
 	},
