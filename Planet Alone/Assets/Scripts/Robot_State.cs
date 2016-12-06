@@ -25,6 +25,7 @@ public class Robot_State : MonoBehaviour
     public ControllerVelocity controller_velocity;
     public GameObject vr_player;
     AudioSource audiosource;
+    Memory memory;
     Utility utility;
     private float velocity;
     float time_player_not_insight;
@@ -53,7 +54,7 @@ public class Robot_State : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        memory = GetComponent<Memory>();
         audiosource = GetComponent<AudioSource>();
         utility = GetComponent<Utility>();
         fof_class = GetComponent<Friend_Foe>();
@@ -75,14 +76,14 @@ public class Robot_State : MonoBehaviour
 
         Action = new Dictionary<string, Action_Dialogue>()
         {
-            { "Hostile_item", new Action_Dialogue("Hostile_item", mediium_threat)},
+            { "Hostile_item", new Action_Dialogue("Hostile_item", low_threat)},
             { "Grab", new Action_Dialogue("Grab", no_threat)},
             { "Throw", new Action_Dialogue("Throw", mediium_threat)},
             { "Recovery", new Action_Dialogue("Recovery", no_threat)},
-            { "Shake", new Action_Dialogue("Shake", mediium_threat)},
-            { "Greeting", new Action_Dialogue("Greeting", -mediium_threat)},
+            { "Shake", new Action_Dialogue("Shake", low_threat)},
             { "Hitting", new Action_Dialogue("Hitting", high_threat)},
-            { "Instruction", new Action_Dialogue("Instruction", -high_threat) }
+            { "Greeting", new Action_Dialogue("Greeting", mediium_threat)}, // Comfort
+            { "Instruction", new Action_Dialogue("Instruction", high_threat) } // Comfort
         };
         emotions = new List<Emotion> // Idle
         {
@@ -102,12 +103,6 @@ public class Robot_State : MonoBehaviour
 
         //Updates last time player is seen
         //is_vr_player_in_field_of_view_of_robot(); 
-        List<float> utility_value = utility.GetScore();
-        
-       emotions[0].rating = utility_value[0]; 
-       emotions[1].rating = utility_value[1]; //Debug.Log("frus: " + emotions[0].rating + ",     comf: " + emotions[1].rating);
-       emotions[2].rating = utility_value[2]; // quiet
-
 
         Action_tag_determine();
         //action_tag = "Shake";
@@ -183,15 +178,13 @@ public class Robot_State : MonoBehaviour
     
     }
 
+
     void Action_Dialogue()
     {
         
         //ADD EXCEPTION TO THE REPEAT RULE FOR SHAKE
 
         if (Repeat_Rule()) return;
-        //if(action_tag == previous_action_tag && action_tag == "Shake" ) Debug.Log("Shacking");
-        //Debug.Log("actiobn tag" + action_tag  + ", prev   " + previous_action_tag);
-        //if (action_tag == null) return;
         // find the best quote; 
         int minIndex = 0;
         int min_count = int.MaxValue;
@@ -207,46 +200,74 @@ public class Robot_State : MonoBehaviour
             }
         }
         */
-        // Debug.Log("Before" + minIndex + "," + Action[action_tag].dialogue[(int)FriendOrFoe][minIndex].count);
         Action[action_tag].Talk(FriendOrFoe,0, ref Last_time_speaking);
+        memory.RecordActionToMemory(action_tag);
         previous_action_tag = action_tag == null ? previous_action_tag : action_tag;
-        //action_tag = null;
+    }
+
+    float GetFrustrationScore()
+    {
+        float score = 0f;
+        score += memory.Rating("Hostile_item", Action["Hostile_item"].get_weight());
+        score += memory.Rating("Throw", Action["Throw"].get_weight());
+        score += memory.Rating("Shake", Action["Shake"].get_weight());
+        score += memory.Rating("Hitting", Action["Hitting"].get_weight());
+        return score;
+    }
+    float GetComfortScore()
+    {
+        float score = 0f;
+        score += memory.Rating("Greeting", Action["Greeting"].get_weight());
+        score += memory.Rating("Instruction", Action["Instruction"].get_weight());
+        return score;
+    }
+
+    void Update_Emotions_Score()
+    {
+        emotions[0].rating = GetFrustrationScore();
+        emotions[1].rating = GetComfortScore();
+        emotions[2].rating = utility.quiet_ut;
+    }
+
+    int Find_Emotion_With_Best_Rating()
+    {
+        float maxRating = float.MinValue;
+        int maxindex = 0;
+        for (int i = 0; i < emotions.Count; ++i)
+        {
+            //Debug.Log(i + " " + emotions[i].rating);
+            if (emotions[i].rating > maxRating)
+            {
+                maxRating = emotions[i].rating;
+                maxindex = i;
+            }
+        }
+        return maxindex;
     }
 
     void Idle_Dialogue()
     {
-        
-        if (Time.time - Last_time_speaking > 2)
+
+        Update_Emotions_Score();
+        // find the emotion 
+        int emotionindex = Find_Emotion_With_Best_Rating();
+        // find the best quote; 
+        emotions[emotionindex].dialogue[FriendOrFoe].Sort((p1, p2) => p1.count.CompareTo(p2.count));
+        emotions[emotionindex].Talk(FriendOrFoe, 0, ref Last_time_speaking);
+        /*
+        if (Time.time - Last_time_speaking > 2){
+                int minIndex = 0;
+        int min_count = int.MaxValue;
+        for (int i = 0; i < emotions[maxindex].dialogue[FriendOrFoe].Count; ++i)
         {
-                // find the emotion 
-            float maxRating = float.MinValue;
-            int maxindex = 0;
-            for (int i = 0; i < emotions.Count; ++i)
+            if (emotions[maxindex].dialogue[FriendOrFoe][i].count < min_count)
             {
-
-                //Debug.Log(i + " " + emotions[i].rating);
-                if (emotions[i].rating > maxRating)
-                {
-                    maxRating = emotions[i].rating;
-                    maxindex = i;
-                }
+                min_count = emotions[maxindex].dialogue[FriendOrFoe][i].count;
+                minIndex = i;
             }
-
-            // find the best quote; 
-            int minIndex = 0;
-            int min_count = int.MaxValue;
-            for (int i = 0; i < emotions[maxindex].dialogue[FriendOrFoe].Count; ++i)
-            {
-                if (emotions[maxindex].dialogue[FriendOrFoe][i].count < min_count)
-                {
-                    min_count = emotions[maxindex].dialogue[FriendOrFoe][i].count;
-                    minIndex = i;
-                }
-            }
-            //Debug.Log(maxindex);
-            //Debug.Log("Before" + minIndex + "," + emotions[maxindex].dialogue[(int)FriendOrFoe][minIndex].count);
-            emotions[maxindex].Talk(FriendOrFoe,minIndex, ref Last_time_speaking);
         }
+        }
+        */
     }
 
     bool Repeat_Rule()
