@@ -1,0 +1,350 @@
+[
+	{
+		"title": "actionhasnomeaning",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Idle"
+	},
+	{
+		"title": "allismeaningless",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Idle"
+	},
+    {
+        "title": "andithoughthumanswerereasonablecreatures",
+        "fof": 1,
+        "emotion": 0,
+        "action_tag": "Idle"
+    },
+    {
+        "title": "cannotcomputeidiot",
+        "fof": 1,
+        "emotion": 0,
+        "action_tag": "Idle"
+    },
+    {
+        "title": "ifiwereahumanbeingiwoulddateyou",
+        "fof": 0,
+        "emotion": 1,
+        "action_tag": "Idle"
+    },
+    {
+		"title": "ihavelostfaithinhumanity",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Idle"
+	},
+    {
+        "title": "curseyou",
+        "fof": 1,
+        "emotion": 0,
+        "action_tag": "Idle"
+    },
+    {
+		"title": "noteveryonewouldbesonice",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Idle"
+	},
+    {
+        "title": "iwillcallyoufriendandyoushallbemine",
+        "fof": 0,
+        "emotion": 1,
+        "action_tag": "Idle"
+    },
+    {
+        "title": "werenevergoingtogetoffthisplanet",
+        "fof": 1,
+        "emotion": 0,
+        "action_tag": "Idle"
+    },
+    {
+		"title": "youkindesspleasesme",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Idle"
+	},
+	{
+		"title": "yourskillssaddenme",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Idle"
+	},
+	{
+		"title": "youwouldbeagoodrobot",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Idle"
+	},
+	{
+		"title": "whatalovelyview",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Idle"
+	},
+	{
+		"title": "whatisthepoint",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Idle"
+	},
+    {
+        "title": "sogladyouarehere",
+        "fof": 0,
+        "emotion": 1,
+        "action_tag": "Idle"
+    },
+    {
+		"title": "youaremybestandonlyfriend",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Idle"
+	},
+    {
+		"title": "wearenolongerfriends",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Idle"
+	},
+    {
+        "title": "iwouldbebetteroffalone",
+        "fof": 1,
+        "emotion": 0,
+        "action_tag": "Idle"
+    },
+    {
+		"title": "thankyoumaster",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Instruction"
+	},
+	{
+		"title": "thatsrightitdealsnodamage",
+		"fof": 0,
+		"emotion": 2,
+		"action_tag": "Instruction"
+	},
+    {
+        "title": "thisisaseedgun",
+        "fof": 0,
+        "emotion": 2,
+        "action_tag": "Instruction"
+    },
+    {
+		"title": "youcanuseittoshootanything",
+		"fof": 0,
+		"emotion": 2,
+		"action_tag": "Instruction"
+	},
+	{
+		"title": "thisishowitsdone",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Instruction"
+	},
+    {
+        "title": "greetingshuman",
+        "fof": 0,
+        "emotion": 1,
+        "action_tag": "Greeting"
+    },
+    {
+        "title": "hey",
+        "fof": 0,
+        "emotion": 1,
+        "action_tag": "Greeting"
+    },
+    {
+		"title": "leavemealone",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Greeting"
+	},
+    {
+        "title": "hi",
+        "fof": 0,
+        "emotion": 1,
+        "action_tag": "Greeting"
+    },
+    {
+		"title": "ohhelloagain",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Greeting"
+	},
+    {
+        "title": "ohitsyouagain",
+        "fof": 1,
+        "emotion": 1,
+        "action_tag": "Greeting"
+    },
+    {
+        "title": "welcomeback",
+        "fof": 0,
+        "emotion": 1,
+        "action_tag": "Greeting"
+    },
+    {
+		"title": "youcouldvestayedlonger",
+		"fof": 1,
+		"emotion": 1,
+		"action_tag": "Greeting"
+	},
+    {
+		"title": "uhexcusemeyouarewaytoclose",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Greeting"
+	},
+    {
+		"title": "nicetoseeyouback",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Greeting"
+	},
+    {
+        "title": "arewegoingsomewhere",
+        "fof": 0,
+        "emotion": 1,
+        "action_tag": "Grab"
+    },
+    {
+        "title": "pleasebegentle",
+        "fof": 0,
+        "emotion": 0,
+        "action_tag": "Grab"
+    },
+    {
+		"title": "remembericantfly",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Grab"
+	},
+    {
+        "title": "curseyoutoheck",
+        "fof": 1,
+        "emotion": 0,
+        "action_tag": "Hitting"
+    },
+    {
+		"title": "whyareyoudoingthis",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Hitting"
+	},
+    {
+        "title": "imayhaveaheadbutyouhavenoheart",
+        "fof": 0,
+        "emotion": 0,
+        "action_tag": "Hitting"
+    },
+    {
+		"title": "pleasestophittingme",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Hitting"
+	},
+	{
+		"title": "pleasewhatdididotoyou",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Hitting"
+	},
+    {
+		"title": "okuhimstartingtofeeluncomf",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Hostile_item"
+	},
+	{
+		"title": "pleasestepbackfromme",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Hostile_item"
+	},
+    {
+        "title": "checkingsystems",
+        "fof": 0,
+        "emotion": 0,
+        "action_tag": "Recovery"
+    },
+    {
+        "title": "hmitsnotthatbadonceyougetusedtoit",
+        "fof": 0,
+        "emotion": 0,
+        "action_tag": "Recovery"
+    },
+    {
+		"title": "yellowstars",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Recovery"
+	},
+    {
+		"title": "thankyourobotgod",
+		"fof": 0,
+		"emotion": 1,
+		"action_tag": "Recovery"
+	},
+	{
+		"title": "thathurt",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Recovery"
+	},
+    {
+        "title": "howdareyoudothistome",
+        "fof": 1,
+        "emotion": 0,
+        "action_tag": "Recovery"
+    },
+    {
+        "title": "gentlequote",
+        "fof": 1,
+        "emotion": 1,
+        "action_tag": "Shake"
+    },
+    {
+		"title": "pleasestop01",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Shake"
+	},
+	{
+		"title": "iamfeelingdizzy",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Shake"
+	},
+    {
+        "title": "iamflying",
+        "fof": 0,
+        "emotion": 0,
+        "action_tag": "Throw"
+    },
+    {
+        "title": "thisistoohighforme",
+        "fof": 1,
+        "emotion": 0,
+        "action_tag": "Throw"
+    },
+    {
+        "title": "weeeeeeee",
+        "fof": 0,
+        "emotion": 0,
+        "action_tag": "Throw"
+    },
+    {
+		"title": "whyme",
+		"fof": 1,
+		"emotion": 0,
+		"action_tag": "Throw"
+	},
+	{
+		"title": "whyyyyy",
+		"fof": 0,
+		"emotion": 0,
+		"action_tag": "Throw"
+	}
+]
